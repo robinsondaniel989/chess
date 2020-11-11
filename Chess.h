@@ -15,6 +15,7 @@ public:
 	void printBoard(vector<vector<Chess>>);
 	vector<vector<Chess>> movePiece(vector<vector<Chess>> chessBoard, int player);
 	bool clearPath(vector<vector<Chess>> chessBoard, int y, int x, int y2, int x2);
+	bool checkMate();
 
 };
 
