@@ -26,20 +26,20 @@ vector<vector<Chess>> Chess::newGame()
 	vector<vector<Chess>> chessBoard(8, vector<Chess>(8));
 	vector<Chess> pieces(16);
 	vector<string> pieceNames = { "rook", "knight", "bishop", "queen", "king", "bishop", "knight", "rook", "pawn" };
-	for (int i = 0; i < 8; i++) {		
+	for (int i = 0; i < 8; i++) {
 		Chess piece(pieceNames[i]);
-		teams[0][i] = piece;		
-	}	
+		teams[0][i] = piece;
+	}
 	for (int i = 8; i < 16; i++) {
 		Chess piece(pieceNames[8]);
 		teams[0][i] = piece;
 	}
 	for (int i = 0; i < 8; i++) {
-		chessBoard[7][i] = teams[0][i];		
+		chessBoard[7][i] = teams[0][i];
 	}
 	for (int i = 0; i < 8; i++) {
 		chessBoard[6][i] = teams[0][i + 8];
-	}		
+	}
 	for (int i = 8; i < 16; i++) {
 		transform(pieceNames[8].begin(), pieceNames[8].end(), pieceNames[8].begin(), ::toupper);
 		Chess piece(pieceNames[8]);
@@ -49,7 +49,7 @@ vector<vector<Chess>> Chess::newGame()
 		transform(pieceNames[i].begin(), pieceNames[i].end(), pieceNames[i].begin(), ::toupper);
 		Chess piece(pieceNames[i]);
 		teams[1][i] = piece;
-	}	
+	}
 	for (int i = 0; i < 8; i++) {
 		chessBoard[1][i] = teams[1][i + 8];
 	}
@@ -74,41 +74,42 @@ void Chess::printBoard(vector<vector<Chess>> chessBoard) {
 	}
 }
 
-vector<vector<Chess>> Chess::movePiece(vector<vector<Chess>> chessBoard, int player) {	
-		int y, y2;
-		char x, x2; 
-		cout << "Select a piece to move (letter first): ";
-		cin >> x >> y;
-		cout << "Select a square to move it to (letter first): ";
-		cin >> x2 >> y2;
-		y--; y2--;
-		x2 -= 97; x -= 97;
-		string yourPiece = chessBoard[y][x].getName();
-		string destination = chessBoard[y2][x2].getName();
-		if (yourPiece == "") {
-			cout << "You must select a piece\n";
+vector<vector<Chess>> Chess::movePiece(vector<vector<Chess>> chessBoard, int player) {
+	int y, y2;
+	char x, x2;
+	cout << "Select a piece to move (letter first): ";
+	cin >> x >> y;
+	cout << "Select a square to move it to (letter first): ";
+	cin >> x2 >> y2;
+	y--; y2--;
+	x2 -= 97; x -= 97;
+	string yourPiece = chessBoard[y][x].getName();
+	string destination = chessBoard[y2][x2].getName();
+	if (yourPiece == "") {
+		cout << "You must select a piece\n";
+	}
+	else {
+		if (isupper(yourPiece[0])) {
+			cout << "You cannot move an opponent's piece, try again.\n";
+		}
+		else if (islower(destination[0])) {
+			cout << "You cannot move one of your pieces to a space that contains one of your pieces, try again.\n";
 		}
 		else {
-			if (isupper(yourPiece[0])) {
-				cout << "You cannot move an opponent's piece, try again.\n";
-			}
-			else if (islower(destination[0])) {
-				cout << "You cannot move one of your pieces to a space that contains one of your pieces, try again.\n";
-			}
-			else {
-				if (yourPiece == "pawn") {
-					if ((y - y2) > 2 || (x2 - x) > 1) {
-						cout << "Violation- a pawn cannot move like that\n";
-					}
-					else if ((x2 - x) == 1 && destination == "") {
-						cout << "Violation- a pawn cannot move like that\n";
-					}
-					else if ((y - y2) == 2 && y != 6) {
-						cout << "Violation- a pawn cannot move like that\n";
-					}
-					else {
+			if (yourPiece == "pawn") {
+				if (abs(x - x2) >= 2 || (abs(x2 - x) == 1 && destination == "")) {
+					cout << "Violation- a pawn cannot move like that\n";
+				}
+					else if ((y - y2) == 2 && y == 6 || (y - y2) == 1) {
 						chessBoard[y2][x2] = chessBoard[y][x];
 						chessBoard[y][x].setName("");
+					}
+					else if ((x2 - x) == 1 && destination != "") {
+						chessBoard[y2][x2] = chessBoard[y][x];
+						chessBoard[y][x].setName("");
+					}
+					else {
+						cout << "Violation- a pawn cannot move like that\n";
 					}
 				}
 				else if (yourPiece == "rook") {
@@ -142,22 +143,30 @@ vector<vector<Chess>> Chess::movePiece(vector<vector<Chess>> chessBoard, int pla
 					}
 				}
 				else if (yourPiece == "bishop") {
-					if (abs(y - y2) == abs(x2 - x)) {
+				if (abs(y - y2) == abs(x2 - x)) {
+					bool valid = clearPath(chessBoard, y, x, y2, x2);
+					if (valid) {
 						chessBoard[y2][x2] = chessBoard[y][x];
-						chessBoard[y][x] = Chess();
+						chessBoard[y][x].setName("");
 					}
 					else {
-						cout << "Violation- a bishop cannot move like that\n";
+						cout << "Move path was not open\n";
+					}
+				}
+				else {
+					cout << "Violation- a bishop cannot move like that\n";					
 					}
 				}
 				else if (yourPiece == "queen") {
-					if (abs(y - y2) == abs(x2 - x)) {
-						chessBoard[y2][x2] = chessBoard[y][x];
-						chessBoard[y][x] = Chess();
-					}
-					else if (y == y2 || x == x2) {
-						chessBoard[y2][x2] = chessBoard[y][x];
-						chessBoard[y][x] = Chess();
+					if (abs(y - y2) == abs(x2 - x) || y == y2 || x == x2) {
+						bool valid = clearPath(chessBoard, y, x, y2, x2);
+						if (valid) {
+							chessBoard[y2][x2] = chessBoard[y][x];
+							chessBoard[y][x].setName("");
+						}
+						else {
+							cout << "Move path was not open\n";
+						}
 					}
 					else {
 						cout << "Violation- a queen cannot move like that\n";
@@ -180,22 +189,67 @@ vector<vector<Chess>> Chess::movePiece(vector<vector<Chess>> chessBoard, int pla
 bool Chess::clearPath(vector<vector<Chess>> chessBoard, int y, int x, int y2, int x2) {	
 	int valid = 0;
 		if (y > y2) {
-			while (y > y2) {				
-				string square = chessBoard[(y - 1)][x].getName();
-				if (square != "") {
-					valid++;
+			if (x < x2) {
+				while (y > y2) {
+					string square = chessBoard[(y - 1)][(x + 1)].getName();
+					if (square != "") {
+						valid++;
+					}
+					y--;
+					x++;
 				}
-				y--;
-			} 
-		} else if (y < y2) {
-			do {
-				string square = chessBoard[(y + 1)][x].getName();
-				if (square != "") {
-					valid++;
+			}
+			else if (x > x2) {
+				while (y > y2) {
+					string square = chessBoard[(y - 1)][(x - 1)].getName();
+					if (square != "") {
+						valid++;
+					}
+					y--;
+					x--;
 				}
-				y++;
-			} while (y < y2);
-		} else if (x > x2) {
+			}
+			else {
+				while (y > y2) {
+					string square = chessBoard[(y - 1)][x].getName();
+					if (square != "") {
+						valid++;
+					}
+					y--;
+				}
+			}
+		} if (y < y2) {
+			if (x < x2) {
+				while (y < y2) {
+					string square = chessBoard[(y + 1)][(x + 1)].getName();
+					if (square != "") {
+						valid++;
+					}
+					y++;
+					x++;
+				}
+			}
+			else if (x > x2) {
+				while (y < y2) {
+					string square = chessBoard[(y + 1)][(x - 1)].getName();
+					if (square != "") {
+						valid++;
+					}
+					y++;
+					x--;
+				}
+			}
+			else {
+				while (y < y2) {
+					string square = chessBoard[(y + 1)][x].getName();
+					if (square != "") {
+						valid++;
+					}
+					y++;
+				}
+			}
+		}
+		else if (x > x2) {
 			do {
 				string square = chessBoard[y][(x-1)].getName();
 				if (square != "") {
