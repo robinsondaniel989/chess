@@ -274,6 +274,10 @@ bool Chess::clearPath(vector<vector<Chess>> chessBoard, int y, int x, int y2, in
 		}
 	}
 
+bool Chess::checkMate() {
+
+}
+
 
 
 
