@@ -14,7 +14,7 @@ int main(void) {
 		chessBoard = game.movePiece(chessBoard, 1);
 		game.printBoard(chessBoard);
 		counter++;
-	} while (counter <= 10);
+	} while (counter <= 20);
 
 	return 0;
 }
