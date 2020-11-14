@@ -4,6 +4,7 @@
 #include <iostream>
 #include <algorithm>
 #include <utility>
+using namespace std;
 
 Chess::Chess() {
 	Chess::name = "";
@@ -274,8 +275,16 @@ bool Chess::clearPath(vector<vector<Chess>> chessBoard, int y, int x, int y2, in
 		}
 	}
 
-bool Chess::checkMate() {
+void Chess::checkMate(vector<vector<Chess>> chessBoard) {
+	for (size_t i = 0; i < 8; i++) {
+		for (size_t j = 0; j < 8; j++) {
+			if (islower(chessBoard[i][j].getName()[0])) {
+				cout << "There's a " + chessBoard[i][j].getName(); 
+				printf(" located at %c%d\n", (j+97), (i+1));
 
+			}
+		}
+	}
 }
 
 
