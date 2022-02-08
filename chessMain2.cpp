@@ -96,11 +96,12 @@ int main(void) {
 
 	vector<vector<string>> chessBoard = createBoard();	
 	Chess2 chess;
-	printBoard(chessBoard);
 	int counter = 0;
 	bool move = true;
 	bool lowerCase = true;
+	int result = 0;
 	do {
+		printBoard(chessBoard);
 		int y, y2;
 		char x, x2;
 		cout << "Select a piece to move (letter first): ";
@@ -111,11 +112,45 @@ int main(void) {
 		x2 -= 97; x -= 97;
 		string yourPiece = chessBoard[y][x];
 		string destination = chessBoard[y2][x2];
+		cout << yourPiece;
 		bool valid = chess.validMove(yourPiece, destination, move, lowerCase);
 		if (valid) {
 			cout << "valid";
 		}
+		if (yourPiece == "pawn") {
+			Pawn pawn(1);
+			result = pawn.move(y, x, y2, x2, chessBoard, move);
+		}
+		else if (yourPiece == "knight") {
+			Knight knight(1);
+			result = knight.move(y, x, y2, x2, chessBoard, move);
+		}
+		else if (yourPiece == "bishop") {
+			Bishop bishop(1);
+			result = bishop.move(y, x, y2, x2, chessBoard, move);
+		}
+		else if (yourPiece == "queen") {
+			Queen queen(1);
+			result = queen.move(y, x, y2, x2, chessBoard, move);
+		}
+		else if (yourPiece == "king") {
+			King king(1);
+			result = king.move(y, x, y2, x2, chessBoard, move);
+		}
 
+		if (result == 1) {
+			chessBoard[y2][x2] = chessBoard[y][x];
+			chessBoard[y][x] = "";		
+			cout << "good move\n";
+		}
+		else if (result == 2) {
+			chessBoard[y2][x2] = chessBoard[y][x];
+			chessBoard[y][x] = "";
+			cout << "king is in check\n";
+		}
+		else {
+			cout << "move was no good\n";
+		}
 
 
 	} while (counter < 40);
