@@ -90,18 +90,78 @@ vector<vector<string>> createBoard() {
 	return chessBoard;
 }
 
+int check(vector<vector<string>> chessBoard, vector<int> kingCoor) {
+	/*loops through the entire board and runs movePiece function on every piece to every single square to see
+	if any valid moves exist that could capture the king. The move var has been turned off at the start of this function
+	to let the computer know that I don't want to actually move any pieces right now. The move var is turned back on at
+	the	end	*/
+	for (int x : kingCoor) {
+		cout << x;
+	}
+	int check1 = 0;
+	for (size_t i = 0; i < 8; i++) {
+		for (size_t j = 0; j < 8; j++) {
+			Pawn pawn(1);
+			Knight knight(1);
+			Bishop bishop(1);
+			Rook rook(1);
+			Queen queen(1);
+			King king(1);
+			if (chessBoard[i][j] == "pawn") {
+				check1 = pawn.move(i, j, kingCoor[0], kingCoor[1], chessBoard, false);
+				return check1;
+			}
+			else if (chessBoard[i][j] == "knight") {
+				check1 = knight.move(i, j, kingCoor[0], kingCoor[1], chessBoard, false);
+				return check1;
+			}
+			else if (chessBoard[i][j] == "bishop") {
+				check1 = bishop.move(i, j, kingCoor[0], kingCoor[1], chessBoard, false);
+				return check1;
+			}
+			else if (chessBoard[i][j] == "rook") {
+				check1 = rook.move(i, j, kingCoor[0], kingCoor[1], chessBoard, false);
+				return check1;
+			}
+			else if (chessBoard[i][j] == "queen") {
+				check1 = queen.move(i, j, kingCoor[0], kingCoor[1], chessBoard, false);
+				return check1;
+			}
+			else if (chessBoard[i][j] == "king") {
+				check1 = king.move(i, j, kingCoor[0], kingCoor[1], chessBoard, false);
+				return check1;
+			}			
+		}
+	}
+}
+
+vector<int> findKing(vector<vector<string>> chessBoard) {
+	int kingX = 0;
+	int kingY = 0;
+	for (size_t i = 0; i < 8; i++) {
+		for (size_t j = 0; j < 8; j++) {
+			if (chessBoard[i][j] == "KING") {
+				kingX = i;
+				kingY = j;
+			}
+		}
+	}
+	vector<int> kingCoor = { kingX, kingY };
+	return kingCoor;
+}
+
 
 
 int main(void) {
 
 	vector<vector<string>> chessBoard = createBoard();	
 	Chess2 chess;
-	int counter = 0;
-	bool move = true;
+	int counter = 0;	
 	bool lowerCase = true;
 	int result = 0;
 	do {
 		printBoard(chessBoard);
+		bool move = true;
 		int y, y2;
 		char x, x2;
 		cout << "Select a piece to move (letter first): ";
@@ -137,43 +197,25 @@ int main(void) {
 			King king(1);
 			result = king.move(y, x, y2, x2, chessBoard, move);
 		}
-
+		
+	
 		if (result == 1) {
 			chessBoard[y2][x2] = chessBoard[y][x];
-			chessBoard[y][x] = "";		
-			cout << "good move\n";
-		}
-		else if (result == 2) {
-			chessBoard[y2][x2] = chessBoard[y][x];
 			chessBoard[y][x] = "";
-			cout << "king is in check\n";
+			cout << "good move\n";
 		}
 		else {
 			cout << "move was no good\n";
 		}
+		vector<int> kingCoor = findKing(chessBoard);
+		int check1 = check(chessBoard, kingCoor);
 
+		if (check1 == 2) {
+			cout << "king is in check\n";
+		}
+			
 
-	} while (counter < 40);
-	//Chess2 game;
-	//int counter = 0;
-	//game.printBoard();
-
-	//do {
-	//	int y, y2;
-	//	char x, x2;
-	//	cout << "Select a piece to move (letter first): ";		
-	//	cin >> x >> y;
-	//	cout << "Select a square to move it to (letter first): ";
-	//	cin >> x2 >> y2;
-	//	game.movePiece(x, y, x2, y2);
-	//	game.printBoard();
-	//	game.findKing();
-	//	game.check();
-	//	//game.saveKing();
-	//	
-	//	counter++;
-	//	bool turn = game.getCase();
-	//} while (counter < 40);
+	} while (counter < 40);	
 
 	return 0;
 }

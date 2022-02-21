@@ -21,18 +21,20 @@ int Bishop::move(int y, int x, int y2, int x2, vector<vector<string>> chessBoard
 		//checks that bishop is taking a clear path
 		bool valid = clearPath(x, y, x2, y2, chessBoard);
 		//if move var is true, then we're trying to move bishop
-		if (_move && valid) {
-			if (chessBoard[y2][x2] == "KING" || chessBoard[y2][x2] == "king") {
-				cout << "king";
-				return 2;
-			}
-			else {
-				return 1;
-			}
-		}
-		else if (_move) {
+		//bishop clearPath has a bug
+		if (!valid) {
 			cout << "Move path was not open\n";
 			return 0;
+		}
+		else {
+			if (_move) {
+				return 1;
+			}
+			else {
+				if (chessBoard[y2][x2] == "KING" || chessBoard[y2][x2] == "king") {
+					return 2;
+				}
+			}
 		}
 	}
 	else {
