@@ -10,6 +10,13 @@
 #include "King.h"
 using namespace std;
 
+Pawn pawn(1);
+Rook rook(1);
+Knight knight(1);
+Bishop bishop(1);
+Queen queen(1);
+King king(1);
+
 void printBoard(vector<vector<string>> chessBoard) {
 	vector<string> letters{ " ", "a", "b", "c", "d", "e", "f", "g", "h" };
 	for (string x : letters) {
@@ -29,63 +36,51 @@ vector<vector<string>> createBoard() {
 	vector<vector<string>> chessBoard(8, vector<string>(8));
 
 	for (int i = 0; i < 8; i++) {
-		Pawn pawn(i + 1);
 		chessBoard[6][i] = pawn.getName();
 	}
 	for (int i = 0; i < 8; i++) {
-		Pawn pawn(i + 1);
 		pawn.capName();
 		chessBoard[1][i] = pawn.getName();
 	}
 	int x = 1;
 	for (int i = 0; i < 2; i++) {
-		Knight knight(i + 1);
 		chessBoard[7][x] = knight.getName();
 		x += 5;
 	}
 	x = 1;
 	for (int i = 0; i < 2; i++) {
-		Knight knight(i + 1);
 		knight.capName();
 		chessBoard[0][x] = knight.getName();
 		x += 5;
 	}
 	x = 0;
 	for (int i = 0; i < 2; i++) {
-		Rook rook(i + 1);
 		chessBoard[7][x] = rook.getName();
 		x += 7;
 	}
 	x = 0;
 	for (int i = 0; i < 2; i++) {
-		Rook rook(i + 1);
 		rook.capName();
 		chessBoard[0][x] = rook.getName();
 		x += 7;
 	}
 	x = 2;
 	for (int i = 0; i < 2; i++) {
-		Bishop bishop(i + 1);
 		chessBoard[7][x] = bishop.getName();
 		x += 3;
 	}
 	x = 2;
 	for (int i = 0; i < 2; i++) {
-		Bishop bishop(i + 1);
 		bishop.capName();
 		chessBoard[0][x] = bishop.getName();
 		x += 3;
 	}
-	Queen queen(1);
 	chessBoard[7][3] = queen.getName();
-	Queen queen2(2);
-	queen2.capName();
-	chessBoard[0][3] = queen2.getName();
-	King king(1);
+	queen.capName();
+	chessBoard[0][3] = queen.getName();
 	chessBoard[7][4] = king.getName();
-	King king2(2);
-	king2.capName();
-	chessBoard[0][4] = king2.getName();
+	king.capName();
+	chessBoard[0][4] = king.getName();
 
 	return chessBoard;
 }
@@ -100,13 +95,7 @@ int check(vector<vector<string>> chessBoard, vector<int> kingCoor) {
 	}
 	int check1 = 0;
 	for (size_t i = 0; i < 8; i++) {
-		for (size_t j = 0; j < 8; j++) {
-			Pawn pawn(1);
-			Knight knight(1);
-			Bishop bishop(1);
-			Rook rook(1);
-			Queen queen(1);
-			King king(1);
+		for (size_t j = 0; j < 8; j++) {			
 			if (chessBoard[i][j] == "pawn") {
 				check1 = pawn.move(i, j, kingCoor[0], kingCoor[1], chessBoard, false);
 				return check1;
@@ -161,7 +150,6 @@ int main(void) {
 	int result = 0;
 	do {
 		printBoard(chessBoard);
-		bool move = true;
 		int y, y2;
 		char x, x2;
 		cout << "Select a piece to move (letter first): ";
@@ -173,29 +161,33 @@ int main(void) {
 		string yourPiece = chessBoard[y][x];
 		string destination = chessBoard[y2][x2];
 		cout << yourPiece;
-		bool valid = chess.validMove(yourPiece, destination, move, lowerCase);
+		bool valid = chess.validMove(yourPiece, destination, true, lowerCase);
 		if (valid) {
 			cout << "valid";
 		}
 		if (yourPiece == "pawn") {
 			Pawn pawn(1);
-			result = pawn.move(y, x, y2, x2, chessBoard, move);
+			result = pawn.move(y, x, y2, x2, chessBoard, true);
 		}
 		else if (yourPiece == "knight") {
 			Knight knight(1);
-			result = knight.move(y, x, y2, x2, chessBoard, move);
+			result = knight.move(y, x, y2, x2, chessBoard, true);
 		}
 		else if (yourPiece == "bishop") {
 			Bishop bishop(1);
-			result = bishop.move(y, x, y2, x2, chessBoard, move);
+			result = bishop.move(y, x, y2, x2, chessBoard, true);
+		}
+		else if (yourPiece == "rook") {
+			Rook rook(1);
+			result = rook.move(y, x, y2, x2, chessBoard, true);
 		}
 		else if (yourPiece == "queen") {
 			Queen queen(1);
-			result = queen.move(y, x, y2, x2, chessBoard, move);
+			result = queen.move(y, x, y2, x2, chessBoard, true);
 		}
 		else if (yourPiece == "king") {
 			King king(1);
-			result = king.move(y, x, y2, x2, chessBoard, move);
+			result = king.move(y, x, y2, x2, chessBoard, true);
 		}
 		
 	
@@ -213,6 +205,17 @@ int main(void) {
 		if (check1 == 2) {
 			cout << "king is in check\n";
 		}
+		/*string answer;
+		cout << "Print out pieces and coordinates? (y/n)";
+		cin >> answer;
+		if (answer == "y") {
+			for (size_t i = 0; i < 8; i++) {
+				for (size_t j = 0; j < 8; j++) {
+					cout << "X: " << i << " Y: " << j << chessBoard[i][j] << "\n";
+				}
+				cout << endl;
+			}
+		}*/
 			
 
 	} while (counter < 40);	

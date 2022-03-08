@@ -20,19 +20,24 @@ int Queen::move(int x, int y, int x2, int y2, vector<vector<string>> chessBoard,
 	if (abs(x - x2) == abs(y2 - y) || (x == x2) || (y == y2)) {
 		//checks queen's clear path function
 		bool valid = clearPath(x, y, x2, y2, chessBoard);
-		if (_move && valid) {
-			if (chessBoard[y2][x2] == "KING" || chessBoard[y2][x2] == "king") {
-				cout << "king";
-				return 2;
-			}
-			else {
+		if (valid) {
+			if (_move) {
 				return 1;
 			}
+			else {
+				if (chessBoard[x2][y2] == "KING" || chessBoard[x2][y2] == "king") {
+					return 2;
+				}
+				else {
+					return 1;
+				}
+			}
 		}
-		else if (_move) {
-			cout << "Move path was not open\n";
+		else {
+			if (_move)
+				cout << "Move path was not open\n";
 			return 0;
-		}		
+		}
 	}
 	else {
 		if (_move)

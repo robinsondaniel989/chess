@@ -15,33 +15,36 @@ void Bishop::capName() {
 	id[0] = toupper(id[0]);
 }
 
-int Bishop::move(int y, int x, int y2, int x2, vector<vector<string>> chessBoard, bool _move) {
+int Bishop::move(int x, int y, int x2, int y2, vector<vector<string>> chessBoard, bool _move) {
 	//restricts bishop's movement to diagonal only
 	if (abs(x - x2) == abs(y2 - y)) {
 		//checks that bishop is taking a clear path
 		bool valid = clearPath(x, y, x2, y2, chessBoard);
 		//if move var is true, then we're trying to move bishop
-		//bishop clearPath has a bug
-		if (!valid) {
-			cout << "Move path was not open\n";
-			return 0;
-		}
-		else {
+		if (valid) {		
 			if (_move) {
 				return 1;
 			}
 			else {
-				if (chessBoard[y2][x2] == "KING" || chessBoard[y2][x2] == "king") {
+				if (chessBoard[x2][y2] == "KING" || chessBoard[x2][y2] == "king") {
 					return 2;
 				}
+				else {
+					return 1;
+				}
 			}
+		}
+		else {
+			if (_move)
+			cout << "Move path was not open\n";
+			return 0;
 		}
 	}
 	else {
 		if (_move)
-		cout << "Violation- a bishop cannot move like that\n";
+			cout << "Violation- a bishop cannot move like that\n";
 		return 0;
-	}
+	}	
 }
 
 bool Bishop::clearPath(int x, int y, int x2, int y2, vector<vector<string>> chessBoard) {
