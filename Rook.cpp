@@ -17,6 +17,7 @@ void Rook::capName() {
 
 int Rook::move(int x, int y, int x2, int y2, vector<vector<string>> chessBoard, bool _move) {
 	//rook can only move in straight lines
+	int check1;
 	if (y == y2 || x == x2) {
 		//checks that rook is taking a clear path
 		bool valid = clearPath(x, y, x2, y2, chessBoard);
@@ -25,11 +26,12 @@ int Rook::move(int x, int y, int x2, int y2, vector<vector<string>> chessBoard, 
 				return 1;
 			}
 			else {
-				if (chessBoard[x2][y2] == "KING" || chessBoard[x2][y2] == "king") {
-					return 2;
+				check1 = check(x, y, x2, y2, chessBoard);
+				if (check1 == 0) {
+					return 0;
 				}
 				else {
-					return 1;
+					return 2;
 				}
 			}
 		}
@@ -100,6 +102,20 @@ bool Rook::clearPath(int x, int y, int x2, int y2, vector<vector<string>> chessB
 	}
 	else {
 		return false;
+	}
+}
+
+int Rook::check(int x, int y, int x2, int y2, vector<vector<string>> chessBoard) {
+	for (size_t i = 0; i < 8; i++) {
+		for (size_t j = 0; j < 8; j++) {
+			if (chessBoard[x2][y2] == "KING" || chessBoard[x2][y2] == "king") {
+				cout << "clear path to king";
+				return 1;
+			}
+			else {
+				return 0;
+			}
+		}
 	}
 }
 

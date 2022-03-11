@@ -16,6 +16,7 @@ void Queen::capName() {
 }
 
 int Queen::move(int x, int y, int x2, int y2, vector<vector<string>> chessBoard, bool _move) {
+	int check1;
 	//restricting queen's movement to that of rook and bishop combined
 	if (abs(x - x2) == abs(y2 - y) || (x == x2) || (y == y2)) {
 		//checks queen's clear path function
@@ -25,11 +26,12 @@ int Queen::move(int x, int y, int x2, int y2, vector<vector<string>> chessBoard,
 				return 1;
 			}
 			else {
-				if (chessBoard[x2][y2] == "KING" || chessBoard[x2][y2] == "king") {
-					return 2;
+				check1 = check(x, y, x2, y2, chessBoard);
+				if (check1 == 0) {
+					return 0;
 				}
 				else {
-					return 1;
+					return 2;
 				}
 			}
 		}
@@ -138,6 +140,20 @@ bool Queen::clearPath(int x, int y, int x2, int y2, vector<vector<string>> chess
 	}
 	else {
 		return false;
+	}
+}
+
+int Queen::check(int x, int y, int x2, int y2, vector<vector<string>> chessBoard) {
+	for (size_t i = 0; i < 8; i++) {
+		for (size_t j = 0; j < 8; j++) {
+			if (chessBoard[x2][y2] == "KING" || chessBoard[x2][y2] == "king") {
+				cout << "clear path to king";
+				return 1;
+			}
+			else {
+				return 0;
+			}
+		}
 	}
 }
 
