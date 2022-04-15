@@ -85,7 +85,7 @@ vector<vector<string>> createBoard() {
 	return chessBoard;
 }
 
-int check(vector<vector<string>> chessBoard, vector<int> kingCoor) {
+int check(vector<vector<string>> chessBoard, vector<int> kingCoor, bool lowerCase) {
 	/*loops through the entire board and runs movePiece function on every piece to every single square to see
 	if any valid moves exist that could capture the king. The move var has been turned off at the start of this function
 	to let the computer know that I don't want to actually move any pieces right now */
@@ -94,7 +94,7 @@ int check(vector<vector<string>> chessBoard, vector<int> kingCoor) {
 	for (size_t i = 0; i < 8; i++) {
 		for (size_t j = 0; j < 8; j++) {			
 		if (chessBoard[i][j] == "pawn") {
-				check = pawn.move(i, j, kingCoor[0], kingCoor[1], chessBoard, false);
+				check = pawn.move(i, j, kingCoor[0], kingCoor[1], chessBoard, false, lowerCase);
 				if (check == 2) {
 					check1 += 1;
 				}
@@ -174,23 +174,22 @@ int main(void) {
 		bool valid = chess.validMove(yourPiece, destination, true, lowerCase);
 		if (valid) {
 			cout << "valid";
-
-			if (yourPiece == "pawn") {
-				result = pawn.move(y, x, y2, x2, chessBoard, true);
+			if (yourPiece == "pawn" || "PAWN") {
+				result = pawn.move(y, x, y2, x2, chessBoard, true, lowerCase);
 			}
-			else if (yourPiece == "knight") {
+			else if (yourPiece == "knight" || "KNIGHT") {
 				result = knight.move(y, x, y2, x2, chessBoard, true);
 			}
-			else if (yourPiece == "bishop") {
+			else if (yourPiece == "bishop" || "BISHOP") {
 				result = bishop.move(y, x, y2, x2, chessBoard, true);
 			}
-			else if (yourPiece == "rook") {
+			else if (yourPiece == "rook" || "ROOK") {
 				result = rook.move(y, x, y2, x2, chessBoard, true);
 			}
-			else if (yourPiece == "queen") {
+			else if (yourPiece == "queen" || "QUEEN") {
 				result = queen.move(y, x, y2, x2, chessBoard, true);
 			}
-			else if (yourPiece == "king") {
+			else if (yourPiece == "king" || "KING") {
 				result = king.move(y, x, y2, x2, chessBoard, true);
 			}
 
@@ -200,12 +199,13 @@ int main(void) {
 				chessBoard[y2][x2] = chessBoard[y][x];
 				chessBoard[y][x] = "";
 				cout << "good move\n";
+				lowerCase = !lowerCase;
 			}
 			else {
 				cout << "move was no good\n";
 			}
 			vector<int> kingCoor = findKing(chessBoard);
-			int check1 = check(chessBoard, kingCoor);
+			int check1 = check(chessBoard, kingCoor, lowerCase);
 			cout << check1;
 			if (check1 == 0) {
 				cout << "king not in check\n";
@@ -213,22 +213,11 @@ int main(void) {
 			else {
 				cout << "KING IN CHECK\n";
 			}
-			/*string answer;
-			cout << "Print out pieces and coordinates? (y/n)";
-			cin >> answer;
-			if (answer == "y") {
-				for (size_t i = 0; i < 8; i++) {
-					for (size_t j = 0; j < 8; j++) {
-						cout << "X: " << i << " Y: " << j << chessBoard[i][j] << "\n";
-					}
-					cout << endl;
-				}
-			}*/
 		}
 		else {
 			cout << "Move was not valid\n";
 		}			
-
+		
 	} while (counter < 40);	
 
 	return 0;
